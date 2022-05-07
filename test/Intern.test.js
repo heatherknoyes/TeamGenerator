@@ -1,23 +1,29 @@
 const Intern = require("../lib/Intern");
 
 describe("Intern class", () => {
-  // it("Characters that aren't digits or letters are instantly visible", () => {
-  //   expect(new Letter("?").visible).toBe(true);
-  // });
-  // it("toString returns _ for letters", () => {
-  //   expect(new Letter("a").toString()).toBe("_");
-  // });
-  // describe("getRole", () => {
-  //   it("Correct guess returns true", () => {
-  //     expect(new Letter("j").guess("j")).toBe(true);
-  //   });
-  //   it("Incorrect guess returns false", () => {
-  //     expect(new Letter("j").guess("l")).toBe(false);
-  //   });
-  // });
-  // describe("getSchool", () => {
-  //   it("returns character", () => {
-  //     expect(new Letter("l").getSolution()).toBe("l");
-  //   });
-  // });
+  const intern = new Intern(
+    "Heather",
+    1,
+    "heatherknoyes@gmail.com",
+    "Georgia Tech"
+  );
+
+  it("Should set initial properties based on object creation", () => {
+    expect(intern.name).toBe("Heather");
+    expect(intern.id).toBe(1);
+    expect(intern.email).toBe("heatherknoyes@gmail.com");
+    expect(intern.school).toBe("Georgia Tech");
+  });
+
+  describe("getRole", () => {
+    it("Should return role", () => {
+      expect(intern.getRole()).toBe("Intern");
+    });
+  });
+
+  describe("getSchool", () => {
+    it("Should return school", () => {
+      expect(intern.getSchool()).toBe("Georgia Tech");
+    });
+  });
 });
