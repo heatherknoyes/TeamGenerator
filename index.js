@@ -38,10 +38,11 @@ const questions = [
 
 function writeToFile(fileName, data) {
   fs.writeFile(fileName, generateTeam(data), (err) =>
-    err ? console.log(err) : console.log("Success!")
+    err ? console.log(err) : console.log("Team Generated!")
   );
 }
 
+// Want to inquirer over and over until the team has finished creating
 function init() {
   inquirer
     .prompt(questions)
