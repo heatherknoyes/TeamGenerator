@@ -75,30 +75,31 @@ function writeToFile(fileName, data) {
 
 async function addEmployees() {
   await inquirer.prompt(employeeQuestions).then((response) => {
-    const employee = createEmployee(response);
     if (employee.getRole() === "Intern") {
-      inquirer.prompt({
-        type: "input",
-        name: "askAgain",
-        message:
-          "Would you like to enter another employee? (hit enter for YES) ",
-        default: true,
-      })
-      .then((school) {
-        employee.school = school;
-      });
-      employee.school = 
+      inquirer
+        .prompt({
+          type: "input",
+          message: "School Name: ",
+          name: "school",
+          validate: confirmAnswerValidator,
+        })
+        .then((detail) => {
+          const employee = createEmployee(response, detail);
+          employees.push(employee);
+        });
     } else if (employee.getRole() === "Engineer") {
-      inquirer.prompt({
-        type: "input",
-        name: "askAgain",
-        message:
-          "Would you like to enter another employee? (hit enter for YES) ",
-        default: true,
-      });
+      inquirer
+        .prompt({
+          type: "input",
+          message: "Github Name: ",
+          name: "github",
+          validate: confirmAnswerValidator,
+        })
+        .then((detail) => {
+          const employee = createEmployee(response, detail);
+          employees.push(employee);
+        });
     }
-
-    employees.push(createEmployee(response));
 
     if (
       inquirer.prompt({
@@ -118,12 +119,12 @@ async function addEmployees() {
   });
 }
 
-function createEmployee(data) {
+function createEmployee(data, detail) {
   switch (data.employeeType) {
     case "Engineer":
-      return new Engineer(data.name, data.id, data.email, data.github);
+      return new Engineer(data.name, data.id, data.email, detail.github);
     case "Intern":
-      return new Intern(data.name, data.id, data.email, data.school);
+      return new Intern(data.name, data.id, data.email, detail.school);
   }
   return new Manager(data.name, data.id, data.email, data.officeNumber);
 }
