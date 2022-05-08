@@ -1,6 +1,10 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 const generateTeam = require("./utils/generateTeam");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Engineer");
+const Manager = require("./lib/Manager");
+const employees = [];
 
 const confirmAnswerValidator = (answer) => {
   if (answer !== "") {
@@ -9,11 +13,38 @@ const confirmAnswerValidator = (answer) => {
   return "Please enter at least one character.";
 };
 
-const questions = [
+const startingQuestions = [
+  {
+    type: "input",
+    message: "Manager Name: ",
+    name: "name",
+    validate: confirmAnswerValidator,
+  },
+  {
+    type: "input",
+    message: "Manager ID: ",
+    name: "id",
+    validate: confirmAnswerValidator,
+  },
+  {
+    type: "input",
+    message: "Manager Email Address: ",
+    name: "email",
+    validate: confirmAnswerValidator,
+  },
+  {
+    type: "input",
+    message: "Manager Office Number: ",
+    name: "officeNumber",
+    validate: confirmAnswerValidator,
+  },
+];
+
+const employeeQuestions = [
   {
     type: "input",
     message: "Team Member Name: ",
-    name: "title",
+    name: "name",
     validate: confirmAnswerValidator,
   },
   {
@@ -24,15 +55,15 @@ const questions = [
   },
   {
     type: "input",
-    message: "Email address: ",
+    message: "Team Member Email Address: ",
     name: "email",
     validate: confirmAnswerValidator,
   },
   {
     type: "list",
-    message: "Employee Type ",
+    message: "Employee Type: ",
     name: "employeeType",
-    choices: ["Employee", "Manager", "Intern", "Engineer"],
+    choices: ["Intern", "Engineer"],
   },
 ];
 
@@ -42,17 +73,72 @@ function writeToFile(fileName, data) {
   );
 }
 
-// Want to inquirer over and over until the team has finished creating
-function init() {
-  inquirer
-    .prompt(questions)
-    .then((response) => {
+async function addEmployees() {
+  await inquirer.prompt(employeeQuestions).then((response) => {
+    const employee = createEmployee(response);
+    if (employee.getRole() === "Intern") {
+      inquirer.prompt({
+        type: "input",
+        name: "askAgain",
+        message:
+          "Would you like to enter another employee? (hit enter for YES) ",
+        default: true,
+      })
+      .then((school) {
+        employee.school = school;
+      });
+      employee.school = 
+    } else if (employee.getRole() === "Engineer") {
+      inquirer.prompt({
+        type: "input",
+        name: "askAgain",
+        message:
+          "Would you like to enter another employee? (hit enter for YES) ",
+        default: true,
+      });
+    }
+
+    employees.push(createEmployee(response));
+
+    if (
+      inquirer.prompt({
+        type: "confirm",
+        name: "askAgain",
+        message:
+          "Would you like to enter another employee? (hit enter for YES) ",
+        default: true,
+      })
+    ) {
+      addEmployees();
+    } else {
+      console.log(employees);
       const filename = "./dist/index2.html";
-      writeToFile(filename, response);
+      writeToFile(filename, employees);
+    }
+  });
+}
+
+function createEmployee(data) {
+  switch (data.employeeType) {
+    case "Engineer":
+      return new Engineer(data.name, data.id, data.email, data.github);
+    case "Intern":
+      return new Intern(data.name, data.id, data.email, data.school);
+  }
+  return new Manager(data.name, data.id, data.email, data.officeNumber);
+}
+
+async function init() {
+  await inquirer
+    .prompt(startingQuestions)
+    .then((response) => {
+      employees.push(createEmployee(response));
     })
     .catch((error) => {
       console.log(error);
     });
+
+  await addEmployees();
 }
 
 init();
