@@ -4,6 +4,7 @@ const generateTeam = require("./utils/generateTeam");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Engineer");
 const Manager = require("./lib/Manager");
+const { create } = require("domain");
 const employees = [];
 
 const confirmAnswerValidator = (answer) => {
@@ -38,6 +39,12 @@ const startingQuestions = [
     name: "officeNumber",
     validate: confirmAnswerValidator,
   },
+  {
+    type: "confirm",
+    name: "askAgain",
+    message: "Would you like to add another team member? (hit enter for YES) ",
+    default: true,
+  },
 ];
 
 const employeeQuestions = [
@@ -65,6 +72,26 @@ const employeeQuestions = [
     name: "employeeType",
     choices: ["Intern", "Engineer"],
   },
+  {
+    type: "input",
+    message: "GitHub Username: ",
+    name: "github",
+    validate: confirmAnswerValidator,
+    when: (employeeQuestions) => employeeQuestions.employeeType === "Engineer",
+  },
+  {
+    type: "input",
+    message: "School Name: ",
+    name: "school",
+    validate: confirmAnswerValidator,
+    when: (employeeQuestions) => employeeQuestions.employeeType === "Intern",
+  },
+  {
+    type: "confirm",
+    name: "askAgain",
+    message: "Would you like to add another team member? (hit enter for YES) ",
+    default: true,
+  },
 ];
 
 function writeToFile(fileName, data) {
@@ -75,56 +102,29 @@ function writeToFile(fileName, data) {
 
 async function addEmployees() {
   await inquirer.prompt(employeeQuestions).then((response) => {
-    if (employee.getRole() === "Intern") {
-      inquirer
-        .prompt({
-          type: "input",
-          message: "School Name: ",
-          name: "school",
-          validate: confirmAnswerValidator,
-        })
-        .then((detail) => {
-          const employee = createEmployee(response, detail);
-          employees.push(employee);
-        });
-    } else if (employee.getRole() === "Engineer") {
-      inquirer
-        .prompt({
-          type: "input",
-          message: "Github Name: ",
-          name: "github",
-          validate: confirmAnswerValidator,
-        })
-        .then((detail) => {
-          const employee = createEmployee(response, detail);
-          employees.push(employee);
-        });
+    if (response.employeeType === "Intern") {
+      console.log("adding intern");
+      // createEmployee(response);
+    } else if (response.employeeType === "Engineer") {
+      console.log("adding engineer");
+      // makeEngineer(response);
     }
-
-    if (
-      inquirer.prompt({
-        type: "confirm",
-        name: "askAgain",
-        message:
-          "Would you like to enter another employee? (hit enter for YES) ",
-        default: true,
-      })
-    ) {
+    employees.push(createEmployee(response));
+    if (employeeQuestions.askAgain) {
       addEmployees();
     } else {
-      console.log(employees);
       const filename = "./dist/index2.html";
       writeToFile(filename, employees);
     }
   });
 }
 
-function createEmployee(data, detail) {
+function createEmployee(data) {
   switch (data.employeeType) {
     case "Engineer":
-      return new Engineer(data.name, data.id, data.email, detail.github);
+      return new Engineer(data.name, data.id, data.email, data.github);
     case "Intern":
-      return new Intern(data.name, data.id, data.email, detail.school);
+      return new Intern(data.name, data.id, data.email, data.school);
   }
   return new Manager(data.name, data.id, data.email, data.officeNumber);
 }
@@ -134,12 +134,16 @@ async function init() {
     .prompt(startingQuestions)
     .then((response) => {
       employees.push(createEmployee(response));
+      if (response.askAgain) {
+        addEmployees();
+      } else {
+        const filename = "./dist/index2.html";
+        writeToFile(filename, employees);
+      }
     })
     .catch((error) => {
       console.log(error);
     });
-
-  await addEmployees();
 }
 
 init();
