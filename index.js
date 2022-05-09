@@ -102,13 +102,7 @@ function writeToFile(fileName, data) {
 
 async function addEmployees() {
   await inquirer.prompt(employeeQuestions).then((response) => {
-    if (response.employeeType === "Intern") {
-      console.log("adding intern");
-      // createEmployee(response);
-    } else if (response.employeeType === "Engineer") {
-      console.log("adding engineer");
-      // makeEngineer(response);
-    }
+    console.log(response);
     employees.push(createEmployee(response));
     if (employeeQuestions.askAgain) {
       addEmployees();
