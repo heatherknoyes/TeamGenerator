@@ -15,4 +15,10 @@ describe("Manager class", () => {
       expect(manager.getRole()).toBe("Manager");
     });
   });
+
+  describe("getOfficeNumber", () => {
+    it("Should return office number", () => {
+      expect(manager.getOfficeNumber()).toBe(1);
+    });
+  });
 });

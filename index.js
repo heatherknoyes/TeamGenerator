@@ -77,14 +77,14 @@ const employeeQuestions = [
     message: "GitHub Username: ",
     name: "github",
     validate: confirmAnswerValidator,
-    when: (employeeQuestions) => employeeQuestions.employeeType === "Engineer",
+    when: (answers) => answers.employeeType === "Engineer",
   },
   {
     type: "input",
     message: "School Name: ",
     name: "school",
     validate: confirmAnswerValidator,
-    when: (employeeQuestions) => employeeQuestions.employeeType === "Intern",
+    when: (answers) => answers.employeeType === "Intern",
   },
   {
     type: "confirm",
@@ -102,23 +102,22 @@ function writeToFile(fileName, data) {
 
 async function addEmployees() {
   await inquirer.prompt(employeeQuestions).then((response) => {
-    console.log(response);
     employees.push(createEmployee(response));
-    if (employeeQuestions.askAgain) {
+    if (response.askAgain) {
       addEmployees();
     } else {
-      const filename = "./dist/index2.html";
+      const filename = "./dist/index.html";
       writeToFile(filename, employees);
     }
   });
 }
 
 function createEmployee(data) {
-  switch (data.employeeType) {
-    case "Engineer":
-      return new Engineer(data.name, data.id, data.email, data.github);
-    case "Intern":
-      return new Intern(data.name, data.id, data.email, data.school);
+  console.log(data);
+  if (data.employeeType === "Engineer") {
+    return new Engineer(data.name, data.id, data.email, data.github);
+  } else if (data.employeeType === "Intern") {
+    return new Intern(data.name, data.id, data.email, data.school);
   }
   return new Manager(data.name, data.id, data.email, data.officeNumber);
 }
@@ -131,7 +130,7 @@ async function init() {
       if (response.askAgain) {
         addEmployees();
       } else {
-        const filename = "./dist/index2.html";
+        const filename = "./dist/index.html";
         writeToFile(filename, employees);
       }
     })
