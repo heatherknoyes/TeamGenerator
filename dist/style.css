@@ -1,0 +1,16 @@
+.details {
+  padding: 1rem;
+}
+
+.card {
+  margin: 1rem;
+  width: 20rem;
+}
+
+header h1 {
+  padding: 2rem 0;
+}
+
+.list-group {
+  border: 1px solid rgba(0,0,0,.125);
+}
