@@ -34,6 +34,8 @@ WHEN I click on the links in the Table of Contents
 THEN I am taken to the corresponding section of the README
 ```
 
+[Link to Application Video](https://drive.google.com/file/d/17TJx9MYir0-_XyZ2jdBcG0AcJp5jDdop/view)
+
 ## Table of Contents
 
 - [Installation](#installation)
