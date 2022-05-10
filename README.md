@@ -6,6 +6,8 @@
 
 The motivation for this project was to create a command line program that would dynamically generate an HTML webpage based on user inputs. The two Javascript libraries used to achieve this were inquirer and fs. By utilizing Javascript alone a quick file generator was able to be created that utilized new concepts like command line user interaction and file creation. I learned how to effectively use template literals to make a simple user experience. The thing I'm most proud of for this project is that it did not take me as long as I thought it would have to create the test files and be able to pass them. In the future I'd like to be able to integrate this site with a backend database so that each time it is generated a file on the computer does not grow. With the completion of this project I fulfilled the following user story and acceptance criteria.
 
+[Link to Application Video](https://drive.google.com/file/d/17TJx9MYir0-_XyZ2jdBcG0AcJp5jDdop/view)
+
 ## User Story
 
 ```md
@@ -33,8 +35,6 @@ THEN this is added to the section of the README entitled Questions, with instruc
 WHEN I click on the links in the Table of Contents
 THEN I am taken to the corresponding section of the README
 ```
-
-[Link to Application Video](https://drive.google.com/file/d/17TJx9MYir0-_XyZ2jdBcG0AcJp5jDdop/view)
 
 ## Table of Contents
 
