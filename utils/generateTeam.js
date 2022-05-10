@@ -1,10 +1,5 @@
-// need to ask the user to input details for a team member
-// need to loop until they are done inputting team members
-// for each team member a new team member card would need to be created
-
 function individualCardGenerator(data) {
   let card = ``;
-  console.log(data);
   data.forEach((employee) => {
     card += `<div class="card shadow rounded">
     <div class="card-body bg-info text-white">

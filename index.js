@@ -2,9 +2,8 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 const generateTeam = require("./utils/generateTeam");
 const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
-const { create } = require("domain");
 const employees = [];
 
 const confirmAnswerValidator = (answer) => {
@@ -12,6 +11,20 @@ const confirmAnswerValidator = (answer) => {
     return true;
   }
   return "Please enter at least one character.";
+};
+
+const confirmDigitValidator = (answer) => {
+  if (answer.match(/^[1-9]\d*$/)) {
+    return true;
+  }
+  return "Please only enter numbers.";
+};
+
+const confirmEmailValidator = (answer) => {
+  if (answer.match(/\S+@\S+\.\S+/)) {
+    return true;
+  }
+  return "Please a valid email format.";
 };
 
 const startingQuestions = [
@@ -25,19 +38,19 @@ const startingQuestions = [
     type: "input",
     message: "Manager ID: ",
     name: "id",
-    validate: confirmAnswerValidator,
+    validate: confirmDigitValidator,
   },
   {
     type: "input",
     message: "Manager Email Address: ",
     name: "email",
-    validate: confirmAnswerValidator,
+    validate: confirmEmailValidator,
   },
   {
     type: "input",
     message: "Manager Office Number: ",
     name: "officeNumber",
-    validate: confirmAnswerValidator,
+    validate: confirmDigitValidator,
   },
   {
     type: "confirm",
@@ -58,13 +71,13 @@ const employeeQuestions = [
     type: "input",
     message: "Team Member ID: ",
     name: "id",
-    validate: confirmAnswerValidator,
+    validate: confirmDigitValidator,
   },
   {
     type: "input",
     message: "Team Member Email Address: ",
     name: "email",
-    validate: confirmAnswerValidator,
+    validate: confirmEmailValidator,
   },
   {
     type: "list",
@@ -102,6 +115,7 @@ function writeToFile(fileName, data) {
 
 async function addEmployees() {
   await inquirer.prompt(employeeQuestions).then((response) => {
+    const employee = createEmployee(response);
     employees.push(createEmployee(response));
     if (response.askAgain) {
       addEmployees();
@@ -113,7 +127,6 @@ async function addEmployees() {
 }
 
 function createEmployee(data) {
-  console.log(data);
   if (data.employeeType === "Engineer") {
     return new Engineer(data.name, data.id, data.email, data.github);
   } else if (data.employeeType === "Intern") {
